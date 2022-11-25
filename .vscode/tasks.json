@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Composer Require",
+            "type": "shell",
+            "command": "docker run --rm --interactive --tty --volume $PWD:/app --volume ${COMPOSER_HOME:-$HOME/.composer}:/tmp composer require ${input:composerRequirePackage}",
+            "problemMatcher": []
+        },
+        {
+            "label": "Composer Update",
+            "type": "shell",
+            "command": "docker run --rm --interactive --tty --volume $PWD:/app --volume ${COMPOSER_HOME:-$HOME/.composer}:/tmp composer update",
+            "problemMatcher": []
+        },
+        {
+            "label": "Composer Install",
+            "type": "shell",
+            "command": "docker run --rm --interactive --tty --volume $PWD:/app --volume ${COMPOSER_HOME:-$HOME/.composer}:/tmp composer install",
+            "problemMatcher": []
+        }
+    ],
+    "inputs": [
+        {
+            "id": "composerRequirePackage",
+            "description": "Composer command to execute",
+            "type": "promptString"
+        }
+    ]
+}

@@ -1,0 +1,81 @@
+# Docker Web Development Stack (dstack) 1.0.3
+#
+# Runs Apache, MySQL, PHP, Redis and PhpMyAdmin
+# SSL is preconfigured.
+# Imagemagick and XDebug are activated.
+#
+# Run with
+# docker-compose up -d
+#
+# (C)2020 Harald Schneider
+#
+
+version: '3.7'
+
+services:
+
+  mysql:
+    container_name: "ng-gasverbrauch-mysql"
+    image: bitnami/mysql:8.0.31
+
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD={MYSQL_PASSWORD}
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql:/bitnami/mysql/data
+    restart: unless-stopped
+
+  # --- PHP 8
+  #
+  php:
+    container_name: "ng-gasverbrauch-php"
+    image: bitnami/php-fpm:8.1.12
+    volumes:
+      - ${WWW_ROOT}:/app:delegated
+      - ./docker/data/php/php.ini:/opt/bitnami/php/etc/conf.d/php.ini:ro
+    restart: unless-stopped
+    extra_hosts:
+      host.docker.internal: host-gateway
+    # --- Apache 2.4
+    #
+  apache:
+    container_name: "ng-gasverbrauch-apache"
+    image: bitnami/apache:2.4
+    ports:
+      - '${APACHE_PORT}:8080'
+      - '${APACHE_SSL_PORT}:8443'
+    depends_on:
+      - php
+    volumes:
+      - ${WWW_ROOT}:/app:delegated
+      - ./docker/data/apache/my_vhost.conf:/vhosts/myapp.conf:ro
+      - ./docker/data/apache/certs:/certs
+      # Use this for bitnami's builtin certs:
+      # ./data/apache/certs:/opt/bitnami/apache2/conf/bitnami/certs
+    restart: unless-stopped
+
+  # --- PhpMyAdmin latest
+  # Acccess via
+  # http://127.0.0.1:81 or https://127.0.0.1:8143
+  # Login with user root and mysql-password.
+  #
+  phpmyadmin:
+    container_name: "ng-gasverbrauch-phpmyadmin"
+    image: bitnami/phpmyadmin:latest
+    depends_on:
+      - mysql
+    ports:
+      - '${PHPMYADMIN_PORT}:8080'
+      - '${PHPMYADMIN_SSL_PORT}:8443'
+    environment:
+      - DATABASE_HOST=mysql
+    restart: unless-stopped
+
+volumes:
+  mysql:
+    driver: local
+  logs:
+    driver: local
