@@ -8,8 +8,10 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
+use App\Application\Controllers\AuthenticationController;
 
 return function (App $app) {
+
   $app->options('/{routes:.*}', function (Request $request, Response $response) {
     // CORS Pre-Flight OPTIONS Request Handler
     return $response;
@@ -19,8 +21,7 @@ return function (App $app) {
    * Expects user credentials to authenticate the user and create
    * a JWT for them
    */
-  $app->get('/authenticate', function (Request $request, Response $response) {
-  });
+  $app->post('/authenticate', [AuthenticationController::class, 'authenticate']);
 
   $app->post('/', function (Request $request, Response $response) {
 
