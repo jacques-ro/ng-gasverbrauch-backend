@@ -21,12 +21,15 @@ class AuthenticationController
 
   public function authenticate(ServerRequestInterface $request, ResponseInterface $response, array $args): ResponseInterface
   {
-    $response->getBody()->write(json_encode($this->_authService->tryAuthenticate($this->_userFromRequest($request))));
+    $user = $this->_userFromRequest($request);
+    $auth = $this->_authService->tryAuthenticate($user);
+    $response->getBody()->write(json_encode($auth));
     return $response;
   }
 
-  private function _userFromRequest(ServerRequestInterface $request)
+  private function _userFromRequest(ServerRequestInterface $request): UserCredentials
   {
-    return new UserCredentials('user', 'password');
+    $userJson = $request->getParsedBody();
+    return new UserCredentials($userJson->user, $userJson->password);
   }
 }

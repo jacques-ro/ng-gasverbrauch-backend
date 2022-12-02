@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use App\Application\Settings\SettingsInterface;
+use App\Infrastructure\Persistence\User\InMemoryUserCredentialsRepository;
+use App\Infrastructure\Security\PasswordHasher;
 use DI\ContainerBuilder;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -26,7 +28,9 @@ return function (ContainerBuilder $containerBuilder) {
 
       return $logger;
     },
-    AuthenticationService::class => DI\create(),
-    AuthenticationController::class => DI\create()
+    PasswordHasher::class => DI\autowire(),
+    AuthenticationService::class => DI\autowire(),
+    AuthenticationController::class => DI\autowire(),
+
   ]);
 };
