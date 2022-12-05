@@ -9,8 +9,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\App;
 use Slim\Interfaces\RouteCollectorProxyInterface as Group;
 use App\Application\Controllers\AuthenticationController;
+use App\Application\Controllers\HomeController;
+use Psr\Container\ContainerInterface;
+use App\Domain\Authentication\JwtTokenService;
 
-return function (App $app) {
+return function (App $app, ContainerInterface $c) {
+
+  $tokenService = $c->get(JwtTokenService::class);
 
   $app->options('/{routes:.*}', function (Request $request, Response $response) {
     // CORS Pre-Flight OPTIONS Request Handler
@@ -22,6 +27,8 @@ return function (App $app) {
    * a JWT for them
    */
   $app->post('/authenticate', [AuthenticationController::class, 'authenticate']);
+
+  $app->get('/home', [HomeController::class, 'home'])->add($tokenService->getAuthMiddleware());
 
   $app->post('/', function (Request $request, Response $response) {
 

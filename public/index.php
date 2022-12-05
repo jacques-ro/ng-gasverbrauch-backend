@@ -45,7 +45,7 @@ $middleware($app);
 
 // Register routes
 $routes = require __DIR__ . '/../app/routes.php';
-$routes($app);
+$routes($app, $container);
 
 /** @var SettingsInterface $settings */
 $settings = $container->get(SettingsInterface::class);
