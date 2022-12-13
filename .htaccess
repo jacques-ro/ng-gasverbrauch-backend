@@ -1,5 +1,7 @@
 Options All -Indexes
 
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
+
 <Files .htaccess>
 order allow,deny
 deny from all
@@ -11,6 +13,8 @@ deny from all
   # RewriteBase /
   RewriteRule ^$ public/ [L]
   RewriteRule (.*) public/$1 [L]
+
+
 
   # Redirect to HTTPS
   # RewriteEngine On

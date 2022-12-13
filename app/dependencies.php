@@ -38,7 +38,7 @@ return function (ContainerBuilder $containerBuilder) {
     Jwt::class => DI\autowire(),
     // Das Format für die Erstellung von DateInterval ist hier beschrieben: https://www.php.net/manual/de/dateinterval.construct.php
     // TODO: Das Tokensecret unterhalb ist nur für Dev. Andere Umgebungen müssen das Token aus einem Ort laden, der nicht im Repository landet.
-    JwtTokenService::class => DI\autowire()->constructorParameter('configuration', new JwtTokenServiceConfiguration('Some$tr0ng#S3cre7ForDeV*', new DateInterval('PT10M'))), /// 10 Minuten Gültigkeit
+    JwtTokenService::class => DI\autowire()->constructorParameter('configuration', new JwtTokenServiceConfiguration('Some$tr0ng#S3cre7ForDeV*', new DateInterval('P1D'))), /// 10 Minuten Gültigkeit
 
     HomeController::class => DI\autowire(),
     AuthenticationController::class => DI\autowire(),
